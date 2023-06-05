@@ -1,5 +1,6 @@
 import re
 from jang import Jang
+from jeol import Jeol
 from jo import Jo
 from hang import Hang
 from node import Node
@@ -14,7 +15,7 @@ class Helper:
     # ①-⑳ u+2460 u+2473 
     # ㉑-㉟ u+3251 u+325F
     # ㊱-㊿ u+32B1 u+32BF
-    __dl = ["제[0-9]+장", "제[0-9]+조", "[①-⑳]"] 
+    __dl = ["제[0-9]+장", "제[0-9]+절", "제[0-9]+조", "[①-⑳]"] 
     # page header and footer regex
     __pdl = ["법제처\s+[0-9]+\s+국가법령정보센터", "대한민국헌법 \\n"]
     def __init__(self):
@@ -22,9 +23,9 @@ class Helper:
 
     @staticmethod
     def split(pages, level: int) -> List[Node]:
-        # level 0 전문, 장, 부칙
         mark_list: List[Mark] = []
         node_list: List[Node] = []
+        # level 0 전문, 장, 부칙
         if level == 0:
             l0 = re.compile(Helper.__part[0])
             l1 = re.compile(Helper.__dl[0])
@@ -44,8 +45,21 @@ class Helper:
                     node_list.append(Jang(Helper.__clear_page_header_footer(Helper.__extract_til_end(pages, mark_list[index]))))
                 else:
                     node_list.append(Jang(Helper.__clear_page_header_footer(Helper.__extract(pages, mark_list[index], mark_list[index + 1]))))
+        # level 1 절
         elif level == 1:
-            l0 = re.compile(Helper.__dl[1])
+            l0 = re.compile(Helper.__dl[level])
+            for index, text in enumerate(pages):
+                iter0 = l0.finditer(text)
+                for i0 in iter0:
+                    mark_list.append(Mark(index, i0.span()[0]))
+            for index, mark in enumerate(mark_list):
+                if index == len(mark_list) - 1:
+                    node_list.append(Jeol(Helper.__extract_til_end(pages, mark_list[index])))
+                else:
+                    node_list.append(Jeol(Helper.__extract(pages, mark_list[index], mark_list[index + 1])))
+        # level 2 조
+        elif level == 2:
+            l0 = re.compile(Helper.__dl[level])
             for index, text in enumerate(pages):
                 iter0 = l0.finditer(text)
                 for i0 in iter0:
@@ -55,8 +69,9 @@ class Helper:
                     node_list.append(Jo(Helper.__extract_til_end(pages, mark_list[index])))
                 else:
                     node_list.append(Jo(Helper.__extract(pages, mark_list[index], mark_list[index + 1])))
-        elif level == 2:
-            l0 = re.compile(Helper.__dl[2])
+        # level 3 항
+        elif level == 3:
+            l0 = re.compile(Helper.__dl[level])
             for index, text in enumerate(pages):
                 iter0 = l0.finditer(text)
                 for i0 in iter0:
