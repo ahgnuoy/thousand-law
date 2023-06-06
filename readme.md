@@ -16,3 +16,7 @@
 1. tkinter
 2. tree view
 3. json out
+
+### FUNCTION
+
+1. convert to mediawiki style

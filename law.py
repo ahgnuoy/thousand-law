@@ -1,41 +1,61 @@
-import re
-from mark import Mark
+from node import Node
 from jang import Jang
 from helper import Helper
-from typing import List
+from typing import List, Dict
+import json
 
 class Law:
-    __raw = []
-    __jangs: List[Jang] = []
-    __temp_mark: Mark
+    raw = []
+    jangs: List[Jang] = []
 
     def __init__(self, pages):
-        self.__raw = pages
-        self.__temp_mark = Mark(0, 0)
+        self.raw = Helper.clear_pages_header_footer(pages)
         self.__parse()
-    
-    def print_all(self):
-        pass
 
     def __parse(self):
-        self.__jangs = Helper.split(self.__raw, level=0)
-        for jang in self.__jangs:
-            jang.children = Helper.split([jang.raw], level=1)
-            for jeol in jang.children:
-                jeol.children = Helper.split([jeol.raw], level=2)
-                for jo in jeol.children:
-                    jo.children = Helper.split([jo.raw], level=3)
-
-        for jang in self.__jangs:
-            for jeol in jang.children:
-                for jo in jang.children:
-                    for hang in jo.children:
-                        print(hang.raw)
+        root = Node()
+        for item in Helper.pages_split(self.raw, level=0):
+            self.jangs.append(Jang(item[0], item[1]))
     
     def make_file(self):
         f = open("out.txt", "w", encoding="utf-8")
-        for jang in self.__jangs:
-            for jo in jang.children:
-                for hang in jo.children:
-                    f.write(hang.raw)
+        json.dump(self.make_dict(), f, indent=2, ensure_ascii=False)
         f.close()
+
+    def make_dict(self):
+        out = {}
+        # 절 없이 바로 조로 넘어감
+        for index0, jang in enumerate(self.jangs):
+            out[f"{index0}"] = {}
+            out[f"{index0}"]["text"] = jang.raw
+            out[f"{index0}"]["children"] = {}
+            if len(jang.jeols) != 0:
+                for index1, jeol in enumerate(jang.jeols):
+                    out[f"{index0}"]["children"][f"{index1}"] = {}
+                    out[f"{index0}"]["children"][f"{index1}"]["text"] = jeol.raw
+                    out[f"{index0}"]["children"][f"{index1}"]["children"] = {}
+                    if len(jeol.jos) != 0:
+                        for index2, jo in enumerate(jeol.jos):
+                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"] = {}
+                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["text"] = jo.raw
+                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["children"] = {}
+                            if len(jo.hangs) != 0:
+                                for index3, hang in enumerate(jo.hangs):
+                                    out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["children"][f"{index3}"] = {}
+                                    out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["children"][f"{index3}"]["text"] = hang.raw
+                                    out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["children"][f"{index3}"]["children"] = {}
+            elif len(jang.jos) != 0:
+                for index1, jo in enumerate(jang.jos):
+                    out[f"{index0}"]["children"][f"{index1}"] = {}
+                    out[f"{index0}"]["children"][f"{index1}"]["text"] = jo.raw
+                    out[f"{index0}"]["children"][f"{index1}"]["children"] = {}
+                    if len(jo.hangs) != 0:
+                        for index2, hang in enumerate(jo.hangs):
+                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"] = {}
+                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["text"] = hang.raw
+                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["children"] = {}
+            else:
+                pass
+        return out
+
+
