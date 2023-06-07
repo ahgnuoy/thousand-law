@@ -27,17 +27,17 @@ class Law:
         # 절 없이 바로 조로 넘어감
         for index0, jang in enumerate(self.jangs):
             out[f"{index0}"] = {}
-            out[f"{index0}"]["text"] = jang.raw
+            out[f"{index0}"]["text"] = jang.text
             out[f"{index0}"]["children"] = {}
             if len(jang.jeols) != 0:
                 for index1, jeol in enumerate(jang.jeols):
                     out[f"{index0}"]["children"][f"{index1}"] = {}
-                    out[f"{index0}"]["children"][f"{index1}"]["text"] = jeol.raw
+                    out[f"{index0}"]["children"][f"{index1}"]["text"] = jeol.text
                     out[f"{index0}"]["children"][f"{index1}"]["children"] = {}
                     if len(jeol.jos) != 0:
                         for index2, jo in enumerate(jeol.jos):
                             out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"] = {}
-                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["text"] = jo.raw
+                            out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["text"] = jo.text
                             out[f"{index0}"]["children"][f"{index1}"]["children"][f"{index2}"]["children"] = {}
                             if len(jo.hangs) != 0:
                                 for index3, hang in enumerate(jo.hangs):
@@ -47,7 +47,7 @@ class Law:
             elif len(jang.jos) != 0:
                 for index1, jo in enumerate(jang.jos):
                     out[f"{index0}"]["children"][f"{index1}"] = {}
-                    out[f"{index0}"]["children"][f"{index1}"]["text"] = jo.raw
+                    out[f"{index0}"]["children"][f"{index1}"]["text"] = jo.text
                     out[f"{index0}"]["children"][f"{index1}"]["children"] = {}
                     if len(jo.hangs) != 0:
                         for index2, hang in enumerate(jo.hangs):

@@ -15,3 +15,8 @@ class Jo(Node):
         if len(tl) != 0:
             for item in tl:
                 self.hangs.append(Hang(item[0], item[1]))
+        first_child = self.hangs[0] if len(self.hangs) != 0 else None
+        if first_child is not None:
+            self.text = Helper.match_and_slice(self.raw, first_child.raw)
+        else:
+            self.text = self.raw

@@ -49,8 +49,8 @@ class Helper:
         return tuple_list
     
     def clear_pages_header_footer(pages: List[str]) -> List[str]:
-        for page in pages:
-            page = Helper.__clear_page_header_footer(page)
+        for index, page in enumerate(pages):
+            pages[index] = Helper.__clear_page_header_footer(page)
         return pages
 
     def __clear_page_header_footer(text: str):
@@ -102,4 +102,8 @@ class Helper:
 
     def __extract_til_end(text: str, mark: Mark) -> str:
         return text[mark.index:]
+
+    def match_and_slice(original: str, match: str) -> str:
+        return original[:re.compile(match).search(original).start()]
+
 

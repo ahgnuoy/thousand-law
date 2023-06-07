@@ -15,3 +15,6 @@ class Jeol(Node):
         if len(tl) != 0:
             for item in tl:
                 self.jos.append(Jo(item[0], item[1]))
+        first_child = self.jos[0] if len(self.jos) != 0 else None
+        if first_child is not None:
+            self.text = Helper.match_and_slice(self.raw, first_child.raw)
