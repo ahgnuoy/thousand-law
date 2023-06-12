@@ -4,6 +4,8 @@ from typing import List, Tuple
 
 class Helper:
     # __deli = ["전문", "제[0-9]+장", "제[0-9]+절", "제[0-9]+관", "제[0-9]+조"]
+    __deli = [ ["\n\s+제", "장"], ["\n\s+제", "절"], ["\n제", "조"] ]
+    __hang_deli = [ "\s①", "\n②", "\n③", "\n④", "\n⑤", "\n⑥", "\n⑦", "\n⑧", "\n⑨", "\n⑩", "\n⑪", "\n⑫", "\n⑬", "\n⑭", "\n⑮", "\n⑯", "\n⑰", "\n⑱", "\n⑲", "\n⑳", "\n㉑", "\n㉒", "\n㉓", "\n㉔", "\n㉕", "\n㉖", "\n㉗", "\n㉘", "\n㉙", "\n㉚", "\n㉛", "\n㉜", "\n㉝", "\n㉞", "\n㉟", "\n㊱", "\n㊲", "\n㊳", "\n㊴", "\n㊵", "\n㊶", "\n㊷", "\n㊸", "\n㊹", "\n㊺", "\n㊻", "\n㊼", "\n㊽", "\n㊾", "\n㊿" ]
     # part regex
     __part = ["\s+전문", "\s+부칙"]
     # delimeter level regex
@@ -17,41 +19,109 @@ class Helper:
         pass
 
     @staticmethod
-    def split(text: str, level: int) -> List[Tuple]:
-        mark_list: List[Mark] = []
-        tuple_list: List[Tuple] = []
-        # 전문, 장, 부칙
-        comp = re.compile(Helper.__dl[level])
-        iter = comp.finditer(text)
-        for index, it in enumerate(iter):
-            mark_list.append(Mark(index, it.span()[0]))
-        for index, mark in enumerate(mark_list):
-            if index == len(mark_list) - 1:
-                tuple_list.append((Helper.__extract_til_end(text, mark), mark))
-            else:
-                tuple_list.append((Helper.__extract(text, mark, mark_list[index + 1]), mark))
-        return tuple_list
+    def forehead_split_mark_l(pages: List[str], level: int, index: int) -> Mark:
+        return Helper.__find_mark_l(pages, Helper.__make_deli(level, index))
 
-    def pages_split(pages: List[str], level: int) -> List[Tuple]:
-        mark_list: List[Mark] = []
-        tuple_list: List[Tuple] = []
-        # 전문, 장, 부칙
-        comp = re.compile(Helper.__dl[level])
-        for index, text in enumerate(pages):
-            iter = comp.finditer(text)
-            for i in iter:
-                mark_list.append(Mark(index, i.span()[0]))
-        for index, mark in enumerate(mark_list):
-            if index == len(mark_list) - 1:
-                tuple_list.append((Helper.__pages_extract_til_end(pages, mark), mark))
-            else:
-                tuple_list.append((Helper.__pages_extract(pages, mark, mark_list[index + 1]), mark))
-        return tuple_list
+    @staticmethod
+    def forehead_split_s(text: str, level: int, index: int) -> str:
+        return Helper.__find_pos_s(text, Helper.__make_deli(level, index))
     
+    @staticmethod
     def clear_pages_header_footer(pages: List[str]) -> List[str]:
         for index, page in enumerate(pages):
             pages[index] = Helper.__clear_page_header_footer(page)
         return pages
+
+    @staticmethod
+    def pages_extract(pages: List[str], frm: Mark, t: Mark) -> str: 
+        text = ""
+        if frm.page == t.page:
+            text = pages[frm.page][frm.index:t.index]
+        else:
+            for i in range(frm.page, t.page + 1):
+                if i == frm.page:
+                    text += pages[i][frm.index:]
+                elif i == t.page:
+                    text += pages[i][:t.index]
+                else:
+                    text += pages[i][:]
+        return text
+
+    @staticmethod
+    def pages_extract_til_end(pages: List[str], mark: Mark) -> str:
+        text = ""
+        for i in range(mark.page, len(pages)):
+            if i == mark.page:
+                text += pages[i][mark.index:]
+            else:
+                text += pages[i][:]
+        return text
+
+    @staticmethod
+    def match_and_slice(original: str, match: str) -> str:
+        return original[:re.compile(match).search(original).start()]
+
+    @staticmethod
+    def check_got_jeol(text: str):
+        comp = re.compile(Helper.__make_deli(1, 0))
+        sear = comp.search(text)
+        if sear is not None:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def check_got_jo(text: str):
+        comp = re.compile(Helper.__make_deli(2, 0))
+        sear = comp.search(text)
+        if sear is not None:
+            return True
+        else:
+            return False
+
+    def __make_deli(level: int, index: int) -> str:
+        '''
+        @param\n
+        level int (jang, jeol, jo, hang)\n
+        index int\n
+        @return\n
+        (level = 1, index = 2) -> "\\n제2절"
+        '''
+        if level == 3:
+            return Helper.__hang_deli[index]
+        else:
+            return Helper.__deli[level][0] + str(index+1) + Helper.__deli[level][1]
+
+    def __find_mark_l(pages: List[str], deli: str) -> Mark:
+        mark_list: List[Mark] = []
+        comp = re.compile(deli)
+        for index, page in enumerate(pages):
+            iter = comp.finditer(page)
+            for it in iter:
+                mark_list.append(Mark(index, it.span()[0]))
+
+        if len(mark_list) == 1:
+            return mark_list[0]
+        elif len(mark_list) == 0:
+            # something goes wrong
+            return None
+        else: 
+            # len(mark_list) > 1
+            return None
+
+    def __find_pos_s(text: str, deli: str) -> int:
+        pos_list: List[int] = []
+        comp = re.compile(deli)
+        iter = comp.finditer(text)
+        for it in iter:
+            pos_list.append(it.span()[0])
+        
+        if len(pos_list) == 1:
+            return pos_list[0]
+        elif len(pos_list) == 0:
+            return -1
+        else:
+            return -1
 
     def __clear_page_header_footer(text: str):
         l0 = re.compile(Helper.__pdl[0])
@@ -73,37 +143,3 @@ class Helper:
             text = text.replace(s,"")
 
         return text
-
-    def __pages_extract(pages: List[str], frm: Mark, t: Mark) -> str: 
-        text = ""
-        if frm.page == t.page:
-            text = pages[frm.page][frm.index:t.index]
-        else:
-            for i in range(frm.page, t.page + 1):
-                if i == frm.page:
-                    text += pages[i][frm.index:]
-                elif i == t.page:
-                    text += pages[i][:t.index]
-                else:
-                    text += pages[i][:]
-        return text
-
-    def __pages_extract_til_end(pages: List[str], mark: Mark) -> str:
-        text = ""
-        for i in range(mark.page, len(pages)):
-            if i == mark.page:
-                text += pages[i][mark.index:]
-            else:
-                text += pages[i][:]
-        return text
-
-    def __extract(text: str, frm: Mark, t: Mark) -> str: 
-        return text[frm.index:t.index]
-
-    def __extract_til_end(text: str, mark: Mark) -> str:
-        return text[mark.index:]
-
-    def match_and_slice(original: str, match: str) -> str:
-        return original[:re.compile(match).search(original).start()]
-
-

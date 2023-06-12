@@ -2,20 +2,26 @@ from helper import Helper
 from typing import List
 from node import Node
 from hang import Hang
-from mark import Mark
 class Jo(Node):
-    def __init__(self, raw: str, mark: Mark):
+    def __init__(self, raw: str):
         self.raw = raw
-        self.mark = mark
-        self.hangs: List[Hang] = []
+        self.children: List[Hang] = []
         self.__parse()
     
     def __parse(self):
-        tl = Helper.split(self.raw, level=3)
-        if len(tl) != 0:
-            for item in tl:
-                self.hangs.append(Hang(item[0], item[1]))
-        first_child = self.hangs[0] if len(self.hangs) != 0 else None
+        temp_pos = 0
+        index = 0
+        while True:
+            pos = Helper.forehead_split_s(self.raw, 3, index)
+            if pos > 0:
+                self.children.append(Hang(self.raw[temp_pos:pos]))
+                temp_pos = pos
+            else:
+                self.children.append(Hang(self.raw[temp_pos:]))
+                break
+            index += 1
+
+        first_child = self.children[0] if len(self.children) != 0 else None
         if first_child is not None:
             self.text = Helper.match_and_slice(self.raw, first_child.raw)
         else:

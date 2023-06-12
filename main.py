@@ -21,6 +21,7 @@ def test():
     for i in range(len(reader.pages)):
         extracted = reader.pages[i].extract_text()
         pages.append(extracted)
+
     law = Law(pages)
     law.make_file()
 

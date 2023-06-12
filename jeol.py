@@ -2,19 +2,24 @@ from helper import Helper
 from typing import List
 from node import Node
 from jo import Jo
-from mark import Mark
 class Jeol(Node):
-    def __init__(self, raw: str, mark: Mark):
+    def __init__(self, raw: str):
         self.raw = raw
-        self.mark = mark
-        self.jos: List[Jo] = []
+        self.children: List[Node] = []
         self.__parse()
     
     def __parse(self):
-        tl = Helper.split(self.raw, level=2)
-        if len(tl) != 0:
-            for item in tl:
-                self.jos.append(Jo(item[0], item[1]))
-        first_child = self.jos[0] if len(self.jos) != 0 else None
+        temp_pos = 0
+        index = 0
+        while True:
+            pos = Helper.forehead_split_s(self.raw, 2, index)
+            if pos > 0:
+                self.children.append(Jo(self.raw[temp_pos:pos]))
+                temp_pos = pos
+            else:
+                self.children.append(Jo(self.raw[temp_pos:]))
+                break
+            index += 1
+        first_child = self.children[0] if len(self.children) != 0 else None
         if first_child is not None:
             self.text = Helper.match_and_slice(self.raw, first_child.raw)
