@@ -71,8 +71,8 @@ class Helper:
             return False
 
     @staticmethod
-    def check_got_jo(text: str):
-        comp = re.compile(Helper.__make_deli(2, 0))
+    def check_got_jo(text: str, index: int):
+        comp = re.compile(Helper.__make_deli(2, index))
         sear = comp.search(text)
         if sear is not None:
             return True

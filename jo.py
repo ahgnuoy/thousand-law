@@ -2,10 +2,13 @@ from helper import Helper
 from typing import List
 from node import Node
 from hang import Hang
+from counter import Counter
 class Jo(Node):
-    def __init__(self, raw: str):
+    def __init__(self, raw: str, counter: Counter):
         self.raw = raw
         self.children: List[Hang] = []
+        self.counter: Counter = counter
+        self.counter.value[2] += 1
         self.__parse()
     
     def __parse(self):
