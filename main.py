@@ -16,7 +16,8 @@ def fileOpen():
     law.make_file()
 
 def test():
-    reader = PdfReader("C:/Ahgnuoy/Works/thousand-law/original/대한민국헌법(헌법)(제00010호)(19880225).pdf")
+    # reader = PdfReader("C:/Ahgnuoy/Works/thousand-law/original/대한민국헌법(헌법)(제00010호)(19880225).pdf")
+    reader = PdfReader("C:/Ahgnuoy/Works/thousand-law/original/국가연구개발사업 연구개발비 사용 기준(과학기술정보통신부고시)(제2022-72호)(20221221).pdf")
     pages = []
     for i in range(len(reader.pages)):
         extracted = reader.pages[i].extract_text()

@@ -4,8 +4,11 @@ from typing import List, Tuple
 
 class Helper:
     # __deli = ["전문", "제[0-9]+장", "제[0-9]+절", "제[0-9]+관", "제[0-9]+조"]
-    __deli = [ ["\n\s+제", "장"], ["\n\s+제", "절"], ["\n제", "조"] ]
+    __deli = [ ["\n\s+제", "장"], ["\n\s+제", "절"], ["\n제", "조"], [], ["\n","."], [], ["\n", ")"] ]
+    # level 3 
     __hang_deli = [ "\s①", "\n②", "\n③", "\n④", "\n⑤", "\n⑥", "\n⑦", "\n⑧", "\n⑨", "\n⑩", "\n⑪", "\n⑫", "\n⑬", "\n⑭", "\n⑮", "\n⑯", "\n⑰", "\n⑱", "\n⑲", "\n⑳", "\n㉑", "\n㉒", "\n㉓", "\n㉔", "\n㉕", "\n㉖", "\n㉗", "\n㉘", "\n㉙", "\n㉚", "\n㉛", "\n㉜", "\n㉝", "\n㉞", "\n㉟", "\n㊱", "\n㊲", "\n㊳", "\n㊴", "\n㊵", "\n㊶", "\n㊷", "\n㊸", "\n㊹", "\n㊺", "\n㊻", "\n㊼", "\n㊽", "\n㊾", "\n㊿" ]
+    # level 5
+    __mok_deli = [ "\n가", "\n나", "\n다", "\n라", "\n마", "\n바", "\n사", "\n아", "\n자", "\n차", "\n카", "\n타", "\n파", "\n하" ] 
     # part regex
     __part = ["\s+전문", "\s+부칙"]
     # delimeter level regex
@@ -59,7 +62,8 @@ class Helper:
 
     @staticmethod
     def match_and_slice(original: str, match: str) -> str:
-        return original[:re.compile(match).search(original).start()]
+        found_index = original.find(match)
+        return original[:] if found_index < 0 else original[:found_index]
 
     @staticmethod
     def check_got_jeol(text: str):
@@ -120,8 +124,8 @@ class Helper:
             return pos_list[0]
         elif len(pos_list) == 0:
             return -1
-        else:
-            return -1
+        else: # 11조의2 변수 발생으로 첫번째 pos_iter return 
+            return pos_list[0]
 
     def __clear_page_header_footer(text: str):
         l0 = re.compile(Helper.__pdl[0])

@@ -20,7 +20,7 @@ class Jang(Node):
         # 조로 바로 넘어갈 수 있음
         # 조의 누적 카운트
         if Helper.check_got_jeol(self.raw):
-            pos = Helper.forehead_split_s(self.raw, 2, index)
+            pos = Helper.forehead_split_s(self.raw, 1, index)
             temp_pos = pos
             while True:
                 pos = Helper.forehead_split_s(self.raw, 1, index + 1)
