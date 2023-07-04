@@ -12,17 +12,23 @@ class Jo(Node):
         self.__parse()
     
     def __parse(self):
-        temp_pos = 0
         index = 0
-        while True:
+        if Helper.check_got_level(self.raw, 3, index):
+            # 조 하위에 항이 있음
             pos = Helper.forehead_split_s(self.raw, 3, index)
-            if pos > 0:
-                self.children.append(Hang(self.raw[temp_pos:pos]))
-                temp_pos = pos
-            else:
-                self.children.append(Hang(self.raw[temp_pos:]))
-                break
-            index += 1
+            temp_pos = pos
+            while True:
+                pos = Helper.forehead_split_s(self.raw, 3, index + 1)
+                if pos > 0:
+                    self.children.append(Hang(self.raw[temp_pos:pos]))
+                    temp_pos = pos
+                else:
+                    self.children.append(Hang(self.raw[temp_pos:]))
+                    break
+                index += 1
+        else:
+            # 조 하위에 항이 없음
+            pass
 
         first_child = self.children[0] if len(self.children) != 0 else None
         if first_child is not None:

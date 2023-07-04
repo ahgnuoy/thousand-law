@@ -66,17 +66,8 @@ class Helper:
         return original[:] if found_index < 0 else original[:found_index]
 
     @staticmethod
-    def check_got_jeol(text: str):
-        comp = re.compile(Helper.__make_deli(1, 0))
-        sear = comp.search(text)
-        if sear is not None:
-            return True
-        else:
-            return False
-
-    @staticmethod
-    def check_got_jo(text: str, index: int):
-        comp = re.compile(Helper.__make_deli(2, index))
+    def check_got_level(text: str, level: int, index: int):
+        comp = re.compile(Helper.__make_deli(level, index if level == 1 or level == 2 else 0))
         sear = comp.search(text)
         if sear is not None:
             return True

@@ -19,7 +19,7 @@ class Jang(Node):
         # 절 체크
         # 조로 바로 넘어갈 수 있음
         # 조의 누적 카운트
-        if Helper.check_got_jeol(self.raw):
+        if Helper.check_got_level(self.raw, 1, self.counter.value[1]):
             pos = Helper.forehead_split_s(self.raw, 1, index)
             temp_pos = pos
             while True:
@@ -31,7 +31,7 @@ class Jang(Node):
                     self.children.append(Jeol(self.raw[temp_pos:], self.counter))
                     break
                 index += 1
-        elif Helper.check_got_jo(self.raw, self.counter.value[2]):
+        elif Helper.check_got_level(self.raw, 2, self.counter.value[2]):
             pos = Helper.forehead_split_s(self.raw, 2, self.counter.value[2])
             temp_pos = pos
             while True:
