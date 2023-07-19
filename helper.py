@@ -4,11 +4,11 @@ from typing import List, Tuple
 
 class Helper:
     # __deli = ["전문", "제[0-9]+장", "제[0-9]+절", "제[0-9]+관", "제[0-9]+조"]
-    __deli = [ ["\n\s+제", "장"], ["\n\s+제", "절"], ["\n제", "조"], [], ["\n","."], [], ["\n", ")"] ]
+    __deli = [ ["\n\s+제", "장"], ["\n\s+제", "절"], ["\n제", "조"], [], ["\n","\."], [], ["\n", ")"] ]
     # level 3 
     __hang_deli = [ "\s①", "\n②", "\n③", "\n④", "\n⑤", "\n⑥", "\n⑦", "\n⑧", "\n⑨", "\n⑩", "\n⑪", "\n⑫", "\n⑬", "\n⑭", "\n⑮", "\n⑯", "\n⑰", "\n⑱", "\n⑲", "\n⑳", "\n㉑", "\n㉒", "\n㉓", "\n㉔", "\n㉕", "\n㉖", "\n㉗", "\n㉘", "\n㉙", "\n㉚", "\n㉛", "\n㉜", "\n㉝", "\n㉞", "\n㉟", "\n㊱", "\n㊲", "\n㊳", "\n㊴", "\n㊵", "\n㊶", "\n㊷", "\n㊸", "\n㊹", "\n㊺", "\n㊻", "\n㊼", "\n㊽", "\n㊾", "\n㊿" ]
     # level 5
-    __mok_deli = [ "\n가", "\n나", "\n다", "\n라", "\n마", "\n바", "\n사", "\n아", "\n자", "\n차", "\n카", "\n타", "\n파", "\n하" ] 
+    __mok_deli = [ "\n가\.", "\n나\.", "\n다\.", "\n라\.", "\n마\.", "\n바\.", "\n사\.", "\n아\.", "\n자\.", "\n차\.", "\n카\.", "\n타\.", "\n파\.", "\n하\." ] 
     # part regex
     __part = ["\s+전문", "\s+부칙"]
     # delimeter level regex
@@ -84,6 +84,8 @@ class Helper:
         '''
         if level == 3:
             return Helper.__hang_deli[index]
+        elif level ==5:
+            return Helper.__mok_deli[index]
         else:
             return Helper.__deli[level][0] + str(index+1) + Helper.__deli[level][1]
 

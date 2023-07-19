@@ -20,10 +20,10 @@ class Jo(Node):
             while True:
                 pos = Helper.forehead_split_s(self.raw, 3, index + 1)
                 if pos > 0:
-                    self.children.append(Hang(self.raw[temp_pos:pos]))
+                    self.children.append(Hang(self.raw[temp_pos:pos], self.counter))
                     temp_pos = pos
                 else:
-                    self.children.append(Hang(self.raw[temp_pos:]))
+                    self.children.append(Hang(self.raw[temp_pos:], self.counter))
                     break
                 index += 1
         else:
