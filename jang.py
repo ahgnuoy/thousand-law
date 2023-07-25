@@ -7,6 +7,7 @@ from typing import List
 from counter import Counter
 class Jang(Node):
     def __init__(self, raw: str, mark: Mark, counter: Counter):
+        self.level = 0
         self.raw = raw
         self.mark = mark
         self.children: List[Node] = []

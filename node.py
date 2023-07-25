@@ -6,5 +6,6 @@ class Node:
     text:str = ""
     mark:Mark = None
     children: List = []
+    level:int
     def __init__(self):
         pass

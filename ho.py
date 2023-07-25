@@ -5,6 +5,7 @@ from mok import Mok
 from counter import Counter
 class Ho(Node):
     def __init__(self, raw: str, counter: Counter):
+        self.level = 4
         self.raw = raw
         self.text = raw
         self.counter = counter

@@ -5,6 +5,7 @@ from hang import Hang
 from counter import Counter
 class Jo(Node):
     def __init__(self, raw: str, counter: Counter):
+        self.level = 2
         self.raw = raw
         self.children: List[Hang] = []
         self.counter: Counter = counter

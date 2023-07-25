@@ -5,6 +5,7 @@ from jo import Jo
 from counter import Counter
 class Jeol(Node):
     def __init__(self, raw: str, counter: Counter):
+        self.level = 1
         self.raw = raw
         self.children: List[Node] = []
         self.counter = counter

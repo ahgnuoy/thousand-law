@@ -133,8 +133,20 @@ class Helper:
 
         return text
 
-    def __clear_line_feed(text: str):
+    @staticmethod
+    def process_text(text: str) -> str:
+        return Helper.__trim_white_spaces(Helper.__clear_line_feed(text))
+
+    def __clear_line_feed(text: str) -> str:
         l0 = re.compile("\n")
+        sl0 = l0.findall(text)
+        for s in sl0:
+            text = text.replace(s,"")
+
+        return text
+    
+    def __trim_white_spaces(text: str) -> str:
+        l0 = re.compile("^\s+")
         sl0 = l0.findall(text)
         for s in sl0:
             text = text.replace(s,"")

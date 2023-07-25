@@ -5,6 +5,7 @@ from ho import Ho
 from counter import Counter
 class Hang(Node):
     def __init__(self, raw: str, counter: Counter):
+        self.level = 3
         self.raw = raw
         self.text = raw
         self.counter: Counter = counter
